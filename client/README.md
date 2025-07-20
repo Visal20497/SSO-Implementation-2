@@ -1,69 +1,99 @@
-# React + TypeScript + Vite
+# 🔐 Microsoft SSO React App (with MSAL)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This project demonstrates how to integrate **Microsoft Single Sign-On (SSO)** in a **React app** using the **Microsoft Authentication Library (MSAL)**.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 📦 Tech Stack
 
-## Expanding the ESLint configuration
+- React (with Vite)
+- TypeScript/JavaScript
+- @azure/msal-react
+- @azure/msal-browser
+- Microsoft Entra ID (formerly Azure AD)
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+---
 
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## 🚀 Getting Started
 
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
+### 1. Clone the Repo
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
+```bash
+git clone https://github.com/your-username/your-repo.git
+cd your-repo
+
+
+🏗️ Azure Setup
+Step 1: Register an App
+Go to Azure Portal – App Registrations
+
+Click "New registration"
+
+Set:
+
+Name: Your App Name
+
+Supported account types: Single tenant or Multitenant
+
+Redirect URI: http://localhost:5173/ (or your production domain)
+
+Step 2: Configure Authentication
+Under Authentication:
+
+Add http://localhost:5173/ to redirect URIs
+
+Enable Access tokens (for implicit flows if needed)
+
+Step 3: Configure API Permissions
+Go to API permissions
+
+Add:
+
+Microsoft Graph → Delegated → User.Read
+
+Step 4: Get App Credentials
+Copy the Client ID
+
+Copy your Tenant ID from the Overview section
+
+🔧 Configure MSAL
+Update the authConfig.ts file with your values:
+export const msalConfig = {
+  auth: {
+    clientId: "<YOUR_CLIENT_ID>",
+    authority: "https://login.microsoftonline.com/<YOUR_TENANT_ID>",
+    redirectUri: "http://localhost:5173",
   },
-])
-```
+  ...
+};
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+💻 Run the App
+npm run dev
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+📁 File Structure
+src/
+│
+├── App.tsx               # Main app component with SSO login logic
+├── Home.tsx              # Sample protected component after login
+├── authConfig.ts         # MSAL configuration
+├── main.tsx              # Entry point + MSAL instance
+└── App.css               # Basic styles
 
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+✨ Features
+Microsoft Entra ID login via loginRedirect
+
+SSO between tabs using localStorage
+
+Authenticated/unauthenticated templates
+
+Logout with redirect
+
+📌 Notes
+Make sure the redirect URI is added in Azure
+
+Use "prompt: 'select_account'" instead of "create" if experiencing login issues
+
+Token scopes like ["User.Read"] should be granted API permission
+
+🔒 License
+MIT
